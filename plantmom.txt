@@ -1,0 +1,40 @@
+// C++ code
+//
+#include <Servo.h>
+
+int sensor_value = 0;
+
+int sensorVal = 0;
+
+int time = 0;
+
+int i = 0;
+
+int counter = 0;
+
+Servo servo_5;
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(A0, INPUT);
+  pinMode(9, OUTPUT);
+  servo_5.attach(5, 500, 2500);
+}
+
+void loop()
+{
+  Serial.println(sensorVal);
+  sensorVal = analogRead(A0);
+  analogWrite(9, map(sensorVal, 0, 1023, 0, 100));
+  if (counter < 300) {
+    servo_5.write(180);
+  } else {
+    servo_5.write(0);
+  }
+  if (counter == 600) {
+    counter = 0;
+  }
+  counter = (counter + 1);
+  delay(10); // Delay a little bit to improve simulation performance
+}
