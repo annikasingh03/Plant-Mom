@@ -1,40 +1,39 @@
-// C++ code
-//
-#include <Servo.h>
+import time
+import RPi.GPIO as GPIO
+from gpiozero import Servo
 
-int sensor_value = 0;
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
-int sensorVal = 0;
+sensor_pin = 0
+servo_pin = 5
+output_pin = 9
 
-int time = 0;
+GPIO.setup(output_pin, GPIO.OUT)
 
-int i = 0;
+servo = Servo(servo_pin)
 
-int counter = 0;
+counter = 0
 
-Servo servo_5;
+def read_analog(sensor_pin):
+    pass
 
-void setup()
-{
-  Serial.begin(9600);
-  pinMode(A0, INPUT);
-  pinMode(9, OUTPUT);
-  servo_5.attach(5, 500, 2500);
-}
-
-void loop()
-{
-  Serial.println(sensorVal);
-  sensorVal = analogRead(A0);
-  analogWrite(9, map(sensorVal, 0, 1023, 0, 100));
-  if (counter < 300) {
-    servo_5.write(180);
-  } else {
-    servo_5.write(0);
-  }
-  if (counter == 600) {
-    counter = 0;
-  }
-  counter = (counter + 1);
-  delay(10); // Delay a little bit to improve simulation performance
-}
+while True:
+    sensorVal = read_analog(sensor_pin)
+    
+    print(sensorVal)
+    
+    pwm_value = int((sensorVal / 1023) * 100)
+    GPIO.output(output_pin, pwm_value)
+    
+    if counter < 300:
+        servo.max()
+    else:
+        servo.min()
+    
+    if counter == 600:
+        counter = 0
+    
+    counter += 1
+    
+    time.sleep(0.01)
